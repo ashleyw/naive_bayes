@@ -29,7 +29,8 @@ defmodule NaiveBayes.Mixfile do
   defp package do
     [
       maintainers: ["Ashley Williams"],
-      licenses: ["MIT"]
+      licenses: ["MIT"],
+      links: %{"GitHub" => "https://github.com/ashleyw/naive_bayes"}
     ]
   end
 end
