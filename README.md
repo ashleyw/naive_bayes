@@ -19,7 +19,7 @@ IO.inspect results
 # => %{"classA" => 0.5, "classB" => 0.5}
 ```
 
-See `test/naive_bayes_test.ex` for more examples.
+See [`test/naive_bayes_test.ex`](https://github.com/ashleyw/naive_bayes/blob/master/test/naive_bayes_test.exs) for more examples.
 
 ## Installation
 
