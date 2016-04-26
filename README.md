@@ -1,4 +1,4 @@
-# NaiveBayes
+# NaiveBayes [![Build Status](https://travis-ci.org/ashleyw/naive_bayes.svg?branch=master)](https://travis-ci.org/ashleyw/naive_bayes)
 
 ## Features
 
