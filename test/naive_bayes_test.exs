@@ -7,6 +7,7 @@ defmodule NaiveBayesTest do
       {:ok, nbayes: nbayes}
     end
 
+
   test "should assign equal probability to each class", context do
     nbayes = context[:nbayes]
 
@@ -18,6 +19,8 @@ defmodule NaiveBayesTest do
     assert results["classB"] == 0.5
   end
 
+
+
   test "should allow multiple categories", context do
     nbayes = context[:nbayes]
 
@@ -28,6 +31,8 @@ defmodule NaiveBayesTest do
 
     assert results["classF"] > results["classD"]
   end
+
+
 
   test "should handle more than 2 classes", context do
     nbayes = context[:nbayes]
@@ -42,6 +47,8 @@ defmodule NaiveBayesTest do
     assert results["classC"] <= 0.3
   end
 
+
+
   test "should use smoothing by default to eliminate errors w/division by zero", context do
     nbayes = context[:nbayes]
 
@@ -53,6 +60,8 @@ defmodule NaiveBayesTest do
     assert results[:classB] >= 0.0
   end
 
+
+
   test "works on all tokens - not just strings", context do
     nbayes = context[:nbayes]
 
@@ -62,6 +71,8 @@ defmodule NaiveBayesTest do
 
     assert results["low"] > results["high"]
   end
+
+
 
   test "should optionally purge low frequency data", context do
     nbayes = context[:nbayes]

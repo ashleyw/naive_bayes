@@ -13,11 +13,10 @@ defmodule NaiveBayes do
     Agent.get_and_update pid, fn classifier ->
       classifier = Enum.reduce(categories, classifier, fn(category, classifier) ->
         classifier = put_in(classifier.data, Data.increment_examples(classifier.data, category))
-        classifier = Enum.reduce(tokens, classifier, fn(token, classifier) ->
+        Enum.reduce(tokens, classifier, fn(token, classifier) ->
           classifier = put_in(classifier.data, Data.add_token_to_category(classifier.data, category, token))
           put_in(classifier.vocab, Vocab.seen_token(classifier.vocab, token))
         end)
-        classifier
       end)
       {:ok, classifier}
     end
@@ -80,10 +79,6 @@ defmodule NaiveBayes do
     Enum.reduce(intermed, %{}, fn ({cat, value}, final_probs) ->
       put_in(final_probs, [cat], value / renormalizer)
     end)
-  end
-
-  defp categories_count(classifier) do
-    Enum.count(classifier.data.categories)
   end
 
   defp classifier_instance(pid) do
