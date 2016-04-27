@@ -74,8 +74,6 @@ defmodule NaiveBayes do
     total_example_count = Data.total_examples(classifier.data)
 
     prob_numerator = Enum.reduce(classifier.data.categories, %{}, fn ({cat_name, cat_data}, probs) ->
-      cat_prob = :math.log(Data.example_count(cat_data) / total_example_count)
-
       cat_prob = case classifier.assume_uniform do
         true -> :math.log(1 / Enum.count(classifier.data.categories))
         false -> :math.log(Data.example_count(cat_data) / total_example_count)
