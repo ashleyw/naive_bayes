@@ -25,6 +25,7 @@ nbayes |> NaiveBayes.train( tokenize.("Hey Oasic, Do you offer consulting?"), "H
 nbayes |> NaiveBayes.train( tokenize.("You should buy this stock"), "SPAM" )
 
 results = nbayes |> NaiveBayes.classify( tokenize.("Now is the time to buy Viagra cheaply and discreetly") )
+
 IO.inspect results
 # => %{"HAM" => 0.4832633319857435, "SPAM" => 0.5167366680142564}
 ```
