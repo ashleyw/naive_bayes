@@ -96,4 +96,82 @@ defmodule NaiveBayesTest do
     assert results["classA"] == 0.5
     assert results["classB"] == 0.5
   end
+
+
+
+  test "allows smoothing constant k to be set to any value", context do
+    nbayes = context[:nbayes]
+    nbayes |> NaiveBayes.train( ~w(a a a c), "classA" )
+    nbayes |> NaiveBayes.train( ~w(b b b d), "classB" )
+
+    results = nbayes |> NaiveBayes.classify( ~w(c) )
+
+    prob_k1 = results["classA"]
+    nbayes |> NaiveBayes.set_smoothing(5)
+
+    results = nbayes |> NaiveBayes.classify( ~w(c) )
+    prob_k5 = results["classA"]
+    assert prob_k1 > prob_k5
+  end
+
+
+
+  test "should allow binarized mode", context do
+    nbayes = context[:nbayes]
+
+    train_it = fn ->
+      nbayes |> NaiveBayes.train( ~w(a a a a a a a a a a a), "classA" )
+      nbayes |> NaiveBayes.train( ~w(b b), "classA" )
+      nbayes |> NaiveBayes.train( ~w(a c), "classB" )
+      nbayes |> NaiveBayes.train( ~w(a c), "classB" )
+      nbayes |> NaiveBayes.train( ~w(a c), "classB" )
+    end
+    train_it.()
+    results = nbayes |> NaiveBayes.classify( ~w(a) )
+    assert results["classA"] > 0.5
+
+    nbayes = NaiveBayes.new(binarized: true)
+
+    train_it.()
+    results = nbayes |> NaiveBayes.classify( ~w(a) )
+    assert results["classB"] > 0.5
+  end
+
+
+
+  test "should optionally allow class distribution to be assumed uniform", context do
+    nbayes = context[:nbayes]
+
+    nbayes |> NaiveBayes.train( ~w(a a a a b), "classA" )
+    nbayes |> NaiveBayes.train( ~w(a a a a), "classA" )
+    nbayes |> NaiveBayes.train( ~w(a a a a), "classB" )
+
+    results = nbayes |> NaiveBayes.classify( ~w(a) )
+    assert results["classA"] > 0.5
+
+    nbayes |> NaiveBayes.assume_uniform(true)
+
+    results = nbayes |> NaiveBayes.classify( ~w(a) )
+    assert results["classB"] > 0.5
+  end
+
+
+
+  test "should pass README example", context do
+    nbayes = context[:nbayes]
+
+    tokenize = fn s ->
+      s |> String.downcase |> String.replace(~r/[^a-z ]/, "") |> String.split(~r/\s+/)
+    end
+
+    nbayes |> NaiveBayes.train( tokenize.("You need to buy some Viagra"), "SPAM" )
+    nbayes |> NaiveBayes.train( tokenize.("This is not spam, just a letter to Bob."), "HAM" )
+    nbayes |> NaiveBayes.train( tokenize.("Hey Oasic, Do you offer consulting?"), "HAM" )
+    nbayes |> NaiveBayes.train( tokenize.("You should buy this stock"), "SPAM" )
+
+    results = nbayes |> NaiveBayes.classify( tokenize.("Now is the time to buy Viagra cheaply and discreetly") )
+
+    assert results["SPAM"] > 0.5
+  end
+
 end
