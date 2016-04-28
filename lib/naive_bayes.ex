@@ -13,18 +13,21 @@ defmodule NaiveBayes do
 
   def train(pid, tokens, categories) do
     categories = List.flatten [categories]
-    Agent.get_and_update pid, fn classifier ->
-      if classifier.binarized do
-        tokens = Enum.uniq(tokens)
-      end
-      classifier = Enum.reduce(categories, classifier, fn(category, classifier) ->
-        classifier = put_in(classifier.data, Data.increment_examples(classifier.data, category))
-        Enum.reduce(tokens, classifier, fn(token, classifier) ->
-          classifier = put_in(classifier.data, Data.add_token_to_category(classifier.data, category, token))
-          put_in(classifier.vocab, Vocab.seen_token(classifier.vocab, token))
+
+    if Enum.count(tokens) > 0 && Enum.count(categories) > 0 do
+      Agent.get_and_update(pid, fn classifier ->
+        if classifier.binarized do
+          tokens = Enum.uniq(tokens)
+        end
+        classifier = Enum.reduce(categories, classifier, fn(category, classifier) ->
+          classifier = put_in(classifier.data, Data.increment_examples(classifier.data, category))
+          Enum.reduce(tokens, classifier, fn(token, classifier) ->
+            classifier = put_in(classifier.data, Data.add_token_to_category(classifier.data, category, token))
+            put_in(classifier.vocab, Vocab.seen_token(classifier.vocab, token))
+          end)
         end)
+        {:ok, classifier}
       end)
-      {:ok, classifier}
     end
   end
 
@@ -37,10 +40,10 @@ defmodule NaiveBayes do
   end
 
   def purge_less_than(pid, x) do
-    Agent.get_and_update pid, fn classifier ->
+    Agent.get_and_update(pid, fn classifier ->
       {classifier, remove_list} = Enum.reduce(classifier.vocab.tokens, {classifier, []}, fn ({token, _}, {classifier, remove_list}) ->
         case Data.purge_less_than(classifier.data, token, x) do
-          false -> []
+          false -> nil
           data ->
             classifier = put_in(classifier.data, data)
             remove_list = remove_list ++ [token]
@@ -49,12 +52,11 @@ defmodule NaiveBayes do
       end)
 
       classifier = Enum.reduce(remove_list, classifier, fn (token, classifier) ->
-        vocab = Map.delete(classifier.vocab, token)
-        put_in(classifier.vocab, vocab)
+        put_in(classifier.vocab, Vocab.remove_token(classifier.vocab, token))
       end)
 
       {:ok, classifier}
-    end
+    end, 3600*24*30*1000) # don't timeout
   end
 
   def set_smoothing(pid, x) do

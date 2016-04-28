@@ -1,5 +1,5 @@
 defmodule NaiveBayesTest do
-  use ExUnit.Case
+  use ExUnit.Case, async: true
   doctest NaiveBayes
 
   setup do

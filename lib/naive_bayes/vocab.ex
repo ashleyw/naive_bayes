@@ -5,4 +5,8 @@ defmodule Vocab do
     vocab = put_in(vocab.tokens[token], true)
     vocab
   end
+
+  def remove_token(vocab, token) do
+    Map.delete(vocab, token)
+  end
 end

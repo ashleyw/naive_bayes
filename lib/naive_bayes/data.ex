@@ -15,6 +15,9 @@ defmodule Data do
   end
 
   def add_token_to_category(data, category, token) do
+    if get_in(data.categories, [category]) == nil do
+      data = put_in(data.categories[category], %{})
+    end
     if get_in(data.categories, [category, :tokens]) == nil do
       data = put_in(data.categories[category][:tokens], %{})
     end
