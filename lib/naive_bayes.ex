@@ -5,7 +5,7 @@ defmodule NaiveBayes do
   defstruct vocab: %Vocab{}, data: %Data{}, smoothing: 1, binarized: false, assume_uniform: false
 
   @doc """
-  Initalises a new NaiveBayes agent
+  Initializes a new NaiveBayes agent
 
   Returns `{:ok, pid}`.
 

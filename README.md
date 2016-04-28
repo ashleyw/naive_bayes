@@ -30,7 +30,7 @@ IO.inspect results
 # => %{"HAM" => 0.4832633319857435, "SPAM" => 0.5167366680142564}
 ```
 
-See [`test/naive_bayes_test.ex`](https://github.com/ashleyw/naive_bayes/blob/master/test/naive_bayes_test.exs) for more examples.
+See the [docs](https://hexdocs.pm/naive_bayes/NaiveBayes.html) or [`test/naive_bayes_test.ex`](https://github.com/ashleyw/naive_bayes/blob/master/test/naive_bayes_test.exs) for more examples.
 
 ## Installation
 
