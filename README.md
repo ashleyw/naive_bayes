@@ -36,6 +36,6 @@ See [`test/naive_bayes_test.ex`](https://github.com/ashleyw/naive_bayes/blob/mas
 
 ```elixir
 def deps do
-  [{:naive_bayes, "~> 0.1.0"}]
+  [{:naive_bayes, "~> 0.1.1"}]
 end
 ```
