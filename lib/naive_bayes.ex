@@ -1,6 +1,20 @@
 defmodule NaiveBayes do
+  @moduledoc """
+  An implementation of Naive Bayes
+  """
   defstruct vocab: %Vocab{}, data: %Data{}, smoothing: 1, binarized: false, assume_uniform: false
 
+  @doc """
+  Initalises a new NaiveBayes agent
+
+  Returns `{:ok, pid}`.
+
+  ## Examples
+
+      iex> {:ok, nbayes} = NaiveBayes.new
+      {:ok, #PID<0.137.0>}
+
+  """
   def new(opts \\ []) do
     binarized = opts[:binarized] || false
     assume_uniform = opts[:assume_uniform] || false
@@ -8,29 +22,57 @@ defmodule NaiveBayes do
     {:ok, pid} = Agent.start_link fn ->
       %NaiveBayes{smoothing: smoothing, binarized: binarized, assume_uniform: assume_uniform}
     end
-    pid
+    {:ok, pid}
   end
 
+
+  @doc """
+  Trains the naive bayes instance given a list of tokens and categories
+
+  Returns `{:ok}` or `{:error}`
+
+  ## Examples
+
+      iex> {:ok, nbayes} = NaiveBayes.new
+      {:ok, #PID<0.137.0>}
+      iex> nbayes |> NaiveBayes.train( ["a", "b", "c"], "classA" )
+      {:ok}
+
+  """
   def train(pid, tokens, categories) do
     categories = List.flatten [categories]
 
-    if Enum.count(tokens) > 0 && Enum.count(categories) > 0 do
-      Agent.get_and_update(pid, fn classifier ->
-        if classifier.binarized do
-          tokens = Enum.uniq(tokens)
-        end
-        classifier = Enum.reduce(categories, classifier, fn(category, classifier) ->
-          classifier = put_in(classifier.data, Data.increment_examples(classifier.data, category))
-          Enum.reduce(tokens, classifier, fn(token, classifier) ->
-            classifier = put_in(classifier.data, Data.add_token_to_category(classifier.data, category, token))
-            put_in(classifier.vocab, Vocab.seen_token(classifier.vocab, token))
+    case Enum.count(tokens) > 0 && Enum.count(categories) > 0 do
+      true ->
+        Agent.get_and_update(pid, fn classifier ->
+          if classifier.binarized do
+            tokens = Enum.uniq(tokens)
+          end
+          classifier = Enum.reduce(categories, classifier, fn(category, classifier) ->
+            classifier = put_in(classifier.data, Data.increment_examples(classifier.data, category))
+            Enum.reduce(tokens, classifier, fn(token, classifier) ->
+              classifier = put_in(classifier.data, Data.add_token_to_category(classifier.data, category, token))
+              put_in(classifier.vocab, Vocab.seen_token(classifier.vocab, token))
+            end)
           end)
+          {:ok, classifier}
         end)
-        {:ok, classifier}
-      end)
+        {:ok}
+      false ->
+        {:error}
     end
   end
 
+
+  @doc """
+  Returns a list of probabilities of classes given a list of tokens.
+
+  ## Examples
+
+      iex> results = nbayes |> NaiveBayes.classify( ["a", "b", "c"] )
+      %{"HAM" => 0.4832633319857435, "SPAM" => 0.5167366680142564}
+
+  """
   def classify(pid, tokens) do
     classifier = classifier_instance(pid)
     if classifier.binarized do
@@ -39,6 +81,18 @@ defmodule NaiveBayes do
     calculate_probabilities(classifier, tokens)
   end
 
+
+  @doc """
+  Allows removal of low frequency words that increase processing time and may overfit
+
+  Returns `{:ok}`
+
+  ## Examples
+
+      iex> nbayes |> NaiveBayes.purge_less_than(5)
+      :ok
+
+  """
   def purge_less_than(pid, x) do
     Agent.get_and_update(pid, fn classifier ->
       {classifier, remove_list} = Enum.reduce(classifier.vocab.tokens, {classifier, []}, fn ({token, _}, {classifier, remove_list}) ->
@@ -57,18 +111,45 @@ defmodule NaiveBayes do
 
       {:ok, classifier}
     end, 3600*24*30*1000) # don't timeout
+    {:ok}
   end
 
+
+  @doc """
+  Increase smoothing constant to dampen the effect of the rare tokens
+
+  Returns `{:ok}`
+
+  ## Examples
+
+      iex> nbayes |> NaiveBayes.set_smoothing(2)
+      :ok
+
+  """
   def set_smoothing(pid, x) do
     Agent.get_and_update pid, fn classifier ->
       {:ok, put_in(classifier.smoothing, x)}
     end
+    {:ok}
   end
 
+
+  @doc """
+  Set the assume_uniform constant.
+
+  Returns `{:ok}`
+
+  ## Examples
+
+      iex> nbayes |> NaiveBayes.assume_uniform(true)
+      :ok
+
+  """
   def assume_uniform(pid, bool) do
     Agent.get_and_update pid, fn classifier ->
       {:ok, put_in(classifier.assume_uniform, bool)}
     end
+    {:ok}
   end
 
   defp calculate_probabilities(classifier, tokens) do

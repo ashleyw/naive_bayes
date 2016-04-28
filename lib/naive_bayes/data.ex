@@ -1,4 +1,6 @@
 defmodule Data do
+  @moduledoc false
+
   defstruct categories: %{}
 
   def increment_examples(data, category) do

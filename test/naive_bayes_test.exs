@@ -1,9 +1,8 @@
 defmodule NaiveBayesTest do
   use ExUnit.Case, async: true
-  doctest NaiveBayes
 
   setup do
-      nbayes = NaiveBayes.new
+      {:ok, nbayes} = NaiveBayes.new
       {:ok, nbayes: nbayes}
     end
 
@@ -89,7 +88,7 @@ defmodule NaiveBayesTest do
 
     assert results["classB"] > 0.5
 
-    nbayes |> NaiveBayes.purge_less_than(2)
+    {:ok} = nbayes |> NaiveBayes.purge_less_than(2)
 
     results = nbayes |> NaiveBayes.classify( ~w(c) )
 
@@ -107,7 +106,7 @@ defmodule NaiveBayesTest do
     results = nbayes |> NaiveBayes.classify( ~w(c) )
 
     prob_k1 = results["classA"]
-    nbayes |> NaiveBayes.set_smoothing(5)
+    {:ok} = nbayes |> NaiveBayes.set_smoothing(5)
 
     results = nbayes |> NaiveBayes.classify( ~w(c) )
     prob_k5 = results["classA"]
@@ -130,7 +129,7 @@ defmodule NaiveBayesTest do
     results = nbayes |> NaiveBayes.classify( ~w(a) )
     assert results["classA"] > 0.5
 
-    nbayes = NaiveBayes.new(binarized: true)
+    {:ok, nbayes} = NaiveBayes.new(binarized: true)
 
     train_it.()
     results = nbayes |> NaiveBayes.classify( ~w(a) )
@@ -149,7 +148,7 @@ defmodule NaiveBayesTest do
     results = nbayes |> NaiveBayes.classify( ~w(a) )
     assert results["classA"] > 0.5
 
-    nbayes |> NaiveBayes.assume_uniform(true)
+    {:ok} = nbayes |> NaiveBayes.assume_uniform(true)
 
     results = nbayes |> NaiveBayes.classify( ~w(a) )
     assert results["classB"] > 0.5
@@ -172,6 +171,29 @@ defmodule NaiveBayesTest do
 
     results = nbayes |> NaiveBayes.classify( tokenize.("Now is the time to buy Viagra cheaply and discreetly") )
     assert results["SPAM"] > 0.5
+  end
+
+
+
+  test "train/3 should return {:ok}", context do
+    nbayes = context[:nbayes]
+    {status} = nbayes |> NaiveBayes.train( ~w(a a a a b), "classA" )
+    assert status == :ok
+  end
+
+
+
+  test "train/3 should require n>0 tokens", context do
+    nbayes = context[:nbayes]
+    {status} = nbayes |> NaiveBayes.train( [], "classA" )
+    assert status == :error
+  end
+
+
+  test "train/3 should require n>0 categories", context do
+    nbayes = context[:nbayes]
+    {status} = nbayes |> NaiveBayes.train( ~w(a a a a b), [] )
+    assert status == :error
   end
 
 end

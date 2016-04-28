@@ -1,4 +1,6 @@
 defmodule Vocab do
+  @moduledoc false
+
   defstruct tokens: %{}
 
   def seen_token(vocab, token) do
