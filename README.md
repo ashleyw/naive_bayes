@@ -1,4 +1,4 @@
-# NaiveBayes [![Build Status](https://travis-ci.org/ashleyw/naive_bayes.svg?branch=master)](https://travis-ci.org/ashleyw/naive_bayes) [![Hex.pm](https://img.shields.io/hexpm/v/naive_bayes.svg?maxAge=10)](https://hex.pm/packages/naive_bayes)
+# NaiveBayes [![Build Status](https://travis-ci.org/ashleyw/naive_bayes.svg?branch=master)](https://travis-ci.org/ashleyw/naive_bayes) [![Hex.pm](https://img.shields.io/hexpm/v/naive_bayes.svg?maxAge=0)](https://hex.pm/packages/naive_bayes)
 
 ## Features
 
@@ -36,6 +36,6 @@ See the [docs](https://hexdocs.pm/naive_bayes/NaiveBayes.html) or [`test/naive_b
 
 ```elixir
 def deps do
-  [{:naive_bayes, "~> 0.1.2"}]
+  [{:naive_bayes, "~> 0.1.3"}]
 end
 ```
