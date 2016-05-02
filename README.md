@@ -36,6 +36,6 @@ See the [docs](https://hexdocs.pm/naive_bayes/NaiveBayes.html) or [`test/naive_b
 
 ```elixir
 def deps do
-  [{:naive_bayes, "~> 0.1.2"}]
+  [{:naive_bayes, "~> 0.1.3"}]
 end
 ```
