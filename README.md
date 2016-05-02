@@ -13,7 +13,7 @@
 ## Usage
 
 ```elixir
-nbayes = NaiveBayes.new
+{:ok, nbayes} = NaiveBayes.new
 
 tokenize = fn s ->
   s |> String.downcase |> String.replace(~r/[^a-z ]/, "") |> String.split(~r/\s+/)
