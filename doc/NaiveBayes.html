@@ -213,7 +213,7 @@
     <p>Initializes a new NaiveBayes agent</p>
 <p>Returns <code class="inline">{:ok, pid}</code>.</p>
 <h2>Examples</h2>
-<pre><code class="iex elixir">iex&gt; {:ok, nbayes} = NaiveBayes.new
+<pre><code class="iex elixir">iex&gt; {:ok, nbayes} = NaiveBayes.new(binarized: false, assume_uniform: true, smoothing: 2)
 {:ok, #PID&lt;0.137.0&gt;}</code></pre>
 
   </section>

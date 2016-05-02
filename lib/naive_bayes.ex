@@ -11,7 +11,7 @@ defmodule NaiveBayes do
 
   ## Examples
 
-      iex> {:ok, nbayes} = NaiveBayes.new
+      iex> {:ok, nbayes} = NaiveBayes.new(binarized: false, assume_uniform: true, smoothing: 2)
       {:ok, #PID<0.137.0>}
 
   """
@@ -57,9 +57,9 @@ defmodule NaiveBayes do
           end)
           {:ok, classifier}
         end)
-        {:ok}
+        :ok
       false ->
-        {:error}
+        :error
     end
   end
 
@@ -111,7 +111,7 @@ defmodule NaiveBayes do
 
       {:ok, classifier}
     end, 3600*24*30*1000) # don't timeout
-    {:ok}
+    :ok
   end
 
 
@@ -130,7 +130,7 @@ defmodule NaiveBayes do
     Agent.get_and_update pid, fn classifier ->
       {:ok, put_in(classifier.smoothing, x)}
     end
-    {:ok}
+    :ok
   end
 
 
@@ -149,7 +149,7 @@ defmodule NaiveBayes do
     Agent.get_and_update pid, fn classifier ->
       {:ok, put_in(classifier.assume_uniform, bool)}
     end
-    {:ok}
+    :ok
   end
 
   defp calculate_probabilities(classifier, tokens) do

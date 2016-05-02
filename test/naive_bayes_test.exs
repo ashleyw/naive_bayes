@@ -88,7 +88,7 @@ defmodule NaiveBayesTest do
 
     assert results["classB"] > 0.5
 
-    {:ok} = nbayes |> NaiveBayes.purge_less_than(2)
+    :ok = nbayes |> NaiveBayes.purge_less_than(2)
 
     results = nbayes |> NaiveBayes.classify( ~w(c) )
 
@@ -106,7 +106,7 @@ defmodule NaiveBayesTest do
     results = nbayes |> NaiveBayes.classify( ~w(c) )
 
     prob_k1 = results["classA"]
-    {:ok} = nbayes |> NaiveBayes.set_smoothing(5)
+    :ok = nbayes |> NaiveBayes.set_smoothing(5)
 
     results = nbayes |> NaiveBayes.classify( ~w(c) )
     prob_k5 = results["classA"]
@@ -148,7 +148,7 @@ defmodule NaiveBayesTest do
     results = nbayes |> NaiveBayes.classify( ~w(a) )
     assert results["classA"] > 0.5
 
-    {:ok} = nbayes |> NaiveBayes.assume_uniform(true)
+    :ok = nbayes |> NaiveBayes.assume_uniform(true)
 
     results = nbayes |> NaiveBayes.classify( ~w(a) )
     assert results["classB"] > 0.5
@@ -177,7 +177,7 @@ defmodule NaiveBayesTest do
 
   test "train/3 should return {:ok}", context do
     nbayes = context[:nbayes]
-    {status} = nbayes |> NaiveBayes.train( ~w(a a a a b), "classA" )
+    status = nbayes |> NaiveBayes.train( ~w(a a a a b), "classA" )
     assert status == :ok
   end
 
@@ -185,14 +185,14 @@ defmodule NaiveBayesTest do
 
   test "train/3 should require n>0 tokens", context do
     nbayes = context[:nbayes]
-    {status} = nbayes |> NaiveBayes.train( [], "classA" )
+    status = nbayes |> NaiveBayes.train( [], "classA" )
     assert status == :error
   end
 
 
   test "train/3 should require n>0 categories", context do
     nbayes = context[:nbayes]
-    {status} = nbayes |> NaiveBayes.train( ~w(a a a a b), [] )
+    status = nbayes |> NaiveBayes.train( ~w(a a a a b), [] )
     assert status == :error
   end
 
