@@ -29,14 +29,14 @@ defmodule NaiveBayes do
   @doc """
   Trains the naive bayes instance given a list of tokens and categories
 
-  Returns `{:ok}` or `{:error}`
+  Returns `:ok` or `:error`
 
   ## Examples
 
       iex> {:ok, nbayes} = NaiveBayes.new
       {:ok, #PID<0.137.0>}
       iex> nbayes |> NaiveBayes.train( ["a", "b", "c"], "classA" )
-      {:ok}
+      :ok
 
   """
   def train(pid, tokens, categories) do
@@ -85,7 +85,7 @@ defmodule NaiveBayes do
   @doc """
   Allows removal of low frequency words that increase processing time and may overfit
 
-  Returns `{:ok}`
+  Returns `:ok`
 
   ## Examples
 
@@ -118,7 +118,7 @@ defmodule NaiveBayes do
   @doc """
   Increase smoothing constant to dampen the effect of the rare tokens
 
-  Returns `{:ok}`
+  Returns `:ok`
 
   ## Examples
 
@@ -137,7 +137,7 @@ defmodule NaiveBayes do
   @doc """
   Set the assume_uniform constant.
 
-  Returns `{:ok}`
+  Returns `:ok`
 
   ## Examples
 
