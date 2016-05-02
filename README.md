@@ -1,4 +1,4 @@
-# NaiveBayes [![Build Status](https://travis-ci.org/ashleyw/naive_bayes.svg?branch=master)](https://travis-ci.org/ashleyw/naive_bayes) [![Hex.pm](https://img.shields.io/hexpm/v/naive_bayes.svg?maxAge=2592000)](https://hex.pm/packages/naive_bayes)
+# NaiveBayes [![Build Status](https://travis-ci.org/ashleyw/naive_bayes.svg?branch=master)](https://travis-ci.org/ashleyw/naive_bayes) [![Hex.pm](https://img.shields.io/hexpm/v/naive_bayes.svg?maxAge=10)](https://hex.pm/packages/naive_bayes)
 
 ## Features
 
