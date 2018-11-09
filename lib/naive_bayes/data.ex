@@ -4,9 +4,12 @@ defmodule Data do
   defstruct categories: %{}
 
   def increment_examples(data, category) do
-    if get_in(data.categories, [category]) == nil do
-      data = put_in(data.categories[category], %{})
+    data = if get_in(data.categories, [category]) == nil do
+      put_in(data.categories[category], %{})
+    else
+      data
     end
+
     data = update_in(data.categories[category][:examples], fn e ->
       case e do
         nil -> 1
@@ -17,11 +20,15 @@ defmodule Data do
   end
 
   def add_token_to_category(data, category, token) do
-    if get_in(data.categories, [category]) == nil do
-      data = put_in(data.categories[category], %{})
+    data = if get_in(data.categories, [category]) == nil do
+      put_in(data.categories[category], %{})
+    else
+      data
     end
-    if get_in(data.categories, [category, :tokens]) == nil do
-      data = put_in(data.categories[category][:tokens], %{})
+    data = if get_in(data.categories, [category, :tokens]) == nil do
+      put_in(data.categories[category][:tokens], %{})
+    else
+      data
     end
     data = update_in(data.categories[category][:tokens][token], fn e ->
       case e do

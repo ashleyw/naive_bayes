@@ -45,9 +45,7 @@ defmodule NaiveBayes do
     case Enum.count(tokens) > 0 && Enum.count(categories) > 0 do
       true ->
         Agent.get_and_update(pid, fn classifier ->
-          if classifier.binarized do
-            tokens = Enum.uniq(tokens)
-          end
+          tokens = if classifier.binarized, do: Enum.uniq(tokens), else: tokens
           classifier = Enum.reduce(categories, classifier, fn(category, classifier) ->
             classifier = put_in(classifier.data, Data.increment_examples(classifier.data, category))
             Enum.reduce(tokens, classifier, fn(token, classifier) ->
@@ -75,9 +73,7 @@ defmodule NaiveBayes do
   """
   def classify(pid, tokens) do
     classifier = classifier_instance(pid)
-    if classifier.binarized do
-      tokens = Enum.uniq(tokens)
-    end
+    tokens = if classifier.binarized, do: Enum.uniq(tokens), else: tokens
     calculate_probabilities(classifier, tokens)
   end
 
@@ -97,12 +93,9 @@ defmodule NaiveBayes do
     Agent.get_and_update(pid, fn classifier ->
       {classifier, remove_list} = Enum.reduce(classifier.vocab.tokens, {classifier, []}, fn ({token, _}, {classifier, remove_list}) ->
         case Data.purge_less_than(classifier.data, token, x) do
-          false -> nil
-          data ->
-            classifier = put_in(classifier.data, data)
-            remove_list = remove_list ++ [token]
+          false -> {classifier, remove_list}
+          data -> {put_in(classifier.data, data), remove_list ++ [token]}
         end
-        {classifier, remove_list}
       end)
 
       classifier = Enum.reduce(remove_list, classifier, fn (token, classifier) ->
