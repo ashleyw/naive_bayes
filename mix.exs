@@ -6,11 +6,11 @@ defmodule NaiveBayes.Mixfile do
       app: :naive_bayes,
       version: "0.1.3",
       elixir: "~> 1.2",
-      package: package,
-      description: description,
+      package: package(),
+      description: description(),
       build_embedded: Mix.env == :prod,
       start_permanent: Mix.env == :prod,
-      deps: deps
+      deps: deps()
    ]
   end
 
